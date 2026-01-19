@@ -34,3 +34,23 @@ Built with **FastAPI**, **SQLAlchemy (async)**, and **Pydantic**. Designed for *
 ```bash
 git clone https://github.com/your-username/task-manager-api.git
 cd task-manager-api
+```
+
+2. Create a virtual environment and activate it:
+```
+python -m venv venv
+source venv/bin/activate   # Linux / macOS
+venv\Scripts\activate      # Windows
+```
+
+3. Install Dependencies:
+```
+pip install -r requirements.txt
+```
+
+4. Run the server
+```
+uvicorn main:app --reload
+```
+
+5. Open documentation at http://127.0.0.1:8000/docs
