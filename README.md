@@ -23,7 +23,7 @@ Built with **FastAPI**, **SQLAlchemy (async)**, and **Pydantic**. Designed for *
 - FastAPI
 - SQLAlchemy (Async)
 - Pydantic
-- PostgreSQL / SQLite (for development)
+- MySQL (for development)
 - Uvicorn (server)
 
 ---
