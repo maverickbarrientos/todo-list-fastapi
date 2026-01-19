@@ -32,8 +32,8 @@ Built with **FastAPI**, **SQLAlchemy (async)**, and **Pydantic**. Designed for *
 
 1. Clone the repo:
 ```bash
-git clone https://github.com/your-username/task-manager-api.git
-cd task-manager-api
+git clone https://github.com/your-username/todo-list-fastapi.git
+cd todo-list-fastapi
 ```
 
 2. Create a virtual environment and activate it:
