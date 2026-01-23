@@ -3,3 +3,5 @@ uvicorn
 sqlalchemy
 fastapi_users_db_sqlalchemy
 aiomysql
+fastapi-apscheduler
+aiofiles

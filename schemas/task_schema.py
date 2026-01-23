@@ -14,6 +14,7 @@ class TaskBase(BaseModel):
     date_created: datetime = datetime.now()
     due_date: date
     status: TaskEnum = TaskEnum.pending
+
     
 class TaskCreate(TaskBase):
     pass
@@ -21,6 +22,8 @@ class TaskCreate(TaskBase):
 class TaskResponse(TaskBase):
     id: int
     user_id: int
+    notified: int
+    last_notified: Optional[datetime] = None
 
 class TaskUpdate(BaseModel):
     user_id: Optional[int] = None

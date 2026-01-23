@@ -1,5 +1,5 @@
 from fastapi import Depends
-from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Enum, Text
+from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Enum, Text, SmallInteger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase, relationship
 from schemas.task_schema import TaskEnum
@@ -25,6 +25,8 @@ class Tasks(Base):
     date_created: date = Column(DateTime, default=datetime.now())
     due_date: date = Column(Date)   
     status: TaskEnum = Column(Enum(TaskEnum))
+    notified: int = Column(SmallInteger, default=0)
+    last_notified: datetime = Column(DateTime)
     
     user = relationship("User", back_populates="tasks")
         

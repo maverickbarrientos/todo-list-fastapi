@@ -11,7 +11,6 @@ from services.task_service import TaskService
 from models.users import current_active_user
 
 tasks = APIRouter()
-#FINISH NOTIFICATION SERVICE AND NOTIFICATION LOGIC
 
 #DEPENDENCIES
 def task_service_dependency(session: AsyncSession = Depends(get_session)) -> TaskService:
@@ -66,7 +65,3 @@ async def delete_task(
     task = await task_service.task_delete(task_id, user.id)
     
     return { "status" : task["status"]}
-
-
-#FILTERING - DONE
-#LIMITER - DONE

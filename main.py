@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, BackgroundTasks
 
 from contextlib import asynccontextmanager
 from db.base import create_tables
@@ -13,8 +13,10 @@ from schemas.user_schemas import UserRead, UserCreate, UserUpdate
 
 #DEPENDENCY
 from services.notification_service import NotificationService
-from db.session import get_session
+from db.session import get_session, session_maker
 from models.users import fastapi_users, current_active_user
+from fastapi_apscheduler.scheduler import AsyncIOScheduler
+import asyncio
 
 #MODELS
 from db.base import User
@@ -27,7 +29,23 @@ async def lifespan(app: FastAPI):
     await create_tables()
     yield
 
+@asynccontextmanager
+async def get_session_context():
+    async with session_maker() as session:
+        yield session
+    
+async def schedule_notification():
+    async with get_session_context() as session:
+        service = NotificationService(session)
+        await service.notify_users()
+        
+async def schedule_reset_notified_task():
+    async with get_session_context() as session:
+        service = NotificationService(session)
+        await service.reset_notified_tasks()
+
 app = FastAPI(lifespan=lifespan)
+scheduler = AsyncIOScheduler()
 
 app.include_router(fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"])
 app.include_router(fastapi_users.get_register_router(UserRead, UserCreate), prefix="/auth", tags=["auth"])
@@ -35,20 +53,33 @@ app.include_router(fastapi_users.get_register_router(UserRead, UserCreate), pref
 app.include_router(tasks, tags=["tasks"], prefix="/tasks")
 
 @app.on_event("startup")
-async def notify(
-    notification_dependency: NotificationService = Depends(notification_dependency),
-    user: User = Depends(current_active_user)
-):
-    result = await notification_dependency.notification(user)
-    return { "message" : result}
-
-@app.get("/get_user")
-async def get_user(
-    notification_dependency: NotificationService = Depends(notification_dependency),
-    user: User = Depends(current_active_user)
-):
-    result = await notification_dependency.notification(user.id)
-    return result
+async def notify_startup():  
+    
+    scheduler.add_job(
+        func=schedule_reset_notified_task,
+        trigger="interval",
+        minutes=1,
+        max_instances=1,
+        misfire_grace_time=60,
+        id="reset_notified_task"
+    )
+    
+    scheduler.add_job(
+        func=schedule_notification,
+        trigger="interval",
+        minutes=1,
+        max_instances=1,
+        misfire_grace_time=60,
+        id="send_notification"
+    )
+    
+    scheduler.start()
+    
+    jobs = scheduler.get_jobs()
+    for job in jobs:
+        print(f"Job ID: {job.id}, Next run: {job.next_run_time}")
+    
+    return { "message" : "started" }
     
 @app.patch("/set_notification")
 async def set_notification(
@@ -66,11 +97,3 @@ def index():
         "message" : "Welcome to my To Do List API!",
         "developer" : "Maverick Jade Barrientos"
         }
-    
-#REFLECTION 
-#REMINDERS - If the task is overdue, notify user. If task is not done yet within the due date, it will notify the user
-#CHATBOT 
-
-#FRONTEND
-#CHECKBOX 
-#WIDGETS ON THE FRONTEND

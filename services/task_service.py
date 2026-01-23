@@ -5,23 +5,6 @@ from db.base import Tasks
 from schemas.task_schema import TaskResponse, TaskCreate, TaskUpdate
 
 
-"""_summary_
-
-    Raises:
-        HTTPException: 401
-        HTTPException: 402
-        HTTPException: 404
-        HTTPException: _description_
-        HTTPException: _description_
-        HTTPException: _description_
-        HTTPException: _description_
-        HTTPException: _description_
-        HTTPException: _description_
-
-    Returns:
-        _type_: _description_
-"""
-
 class TaskService():
     def __init__(self, session):
         self.session = session
@@ -30,10 +13,7 @@ class TaskService():
     async def filter_tasks(self, category: str, limit: int, user_id: int) -> list[TaskResponse]:
         
         stmt = select(Tasks).where(Tasks.user_id == user_id).limit(limit)
-        
-        if not user_id: 
-            raise HTTPException(status_code=401, detail="Unauthorized")
-        
+                
         if limit < 0:
             raise HTTPException(status_code=400, detail="Limit must be positive")
         
@@ -46,10 +26,7 @@ class TaskService():
         return task
 
     async def get_task(self, task_id: int, user_id: int) -> TaskResponse:
-        
-        if not user_id: 
-            raise HTTPException(status_code=401, detail="Unauthorized")
-        
+                
         stmt = select(Tasks).where(Tasks.id == task_id and Tasks.user_id == user_id)
         result = await self.session.execute(stmt)
         
@@ -61,10 +38,7 @@ class TaskService():
         return task
     
     async def new_task(self, task_model: TaskCreate, user_id: int) -> TaskResponse:
-        
-        if not user_id: 
-            raise HTTPException(status_code=401, detail="Unauthorized")
-        
+                
         new_task = Tasks(**task_model.model_dump(), user_id=user_id)
         self.session.add(new_task)
         await self.session.commit()
@@ -73,10 +47,7 @@ class TaskService():
         return new_task
     
     async def task_update(self, task_id: int, payload: TaskUpdate, user_id: int) -> TaskResponse:
-        
-        if not user_id: 
-            raise HTTPException(status_code=401, detail="Unauthorized")
-        
+                
         stmt = select(Tasks).where(Tasks.id == task_id and Tasks.user_id == user_id)
         result = await self.session.execute(stmt)
         task = result.scalar_one_or_none()
@@ -94,9 +65,6 @@ class TaskService():
         return task
     
     async def task_delete(self, task_id: int, user_id: int):
-        
-        if not user_id: 
-            raise HTTPException(status_code=401, detail="Unauthorized")
         
         if not task_id:
             raise HTTPException(status_code=404, detail="Task not found")
