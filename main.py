@@ -1,4 +1,31 @@
-from fastapi import FastAPI, Depends, BackgroundTasks
+
+"""
+
+Application Entry Point
+
+Initializes the FastAPI application, sets up database tables, 
+authentication, routes, and scheduled background tasks.
+
+Features:
+- JWT authentication and user registration via FastAPI Users
+- Task management endpoints (CRUD operations)
+- Asynchronous database sessions using SQLAlchemy AsyncSession
+- Background notifications for pending tasks
+- Scheduled jobs for resetting task notifications and sending alerts
+- Lifespan management to create database tables on startup
+
+Schedulers:
+- `schedule_notification`: Sends notifications for pending tasks every minute
+- `schedule_reset_notified_task`: Resets the `notified` flag for tasks every minute
+
+Dependencies:
+- `NotificationService` injected via FastAPI Depends
+- Current active user obtained with `current_active_user`
+
+"""
+
+
+from fastapi import FastAPI, Depends
 
 from contextlib import asynccontextmanager
 from db.base import create_tables
@@ -9,7 +36,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.v1.tasks import tasks
 
 #SCHEMAS
-from schemas.user_schemas import UserRead, UserCreate, UserUpdate
+from schemas.user_schemas import UserRead, UserCreate
 
 #DEPENDENCY
 from services.notification_service import NotificationService
@@ -75,11 +102,7 @@ async def notify_startup():
     
     scheduler.start()
     
-    jobs = scheduler.get_jobs()
-    for job in jobs:
-        print(f"Job ID: {job.id}, Next run: {job.next_run_time}")
-    
-    return { "message" : "started" }
+    return { "message" : "Notification schedulers started" }
     
 @app.patch("/set_notification")
 async def set_notification(

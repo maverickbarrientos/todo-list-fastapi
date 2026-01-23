@@ -1,3 +1,18 @@
+
+"""
+
+Notification Service
+
+Manages all the notification-related logic for tasks.
+Filters all of the pending and not notified tasks
+for the specific user and sends the notification.
+
+Sets the notified to false if the task is still pending
+after notifying the user.
+
+
+"""
+
 from sqlalchemy import select, update
 from db.base import Tasks
 from datetime import datetime, timedelta, timezone, date
@@ -49,7 +64,8 @@ class NotificationService():
         
         stmt = (update(Tasks)
                 .where(Tasks.notified == 1, 
-                       Tasks.due_date <= datetime.now(timezone.utc))
+                       Tasks.due_date <= datetime.now(timezone.utc),
+                        Tasks.last_notified <= threshold)
                 .values(notified=0)
                 )
         await self.session.execute(stmt)

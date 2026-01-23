@@ -1,3 +1,16 @@
+
+"""
+
+JWT Authentication and User Manager
+
+Manages the registration and authentication
+and provides the token after every successful login.
+
+Provides utilities to retrieve the current active user 
+ensuring protected endpoints are only accessible to authenticated users.
+
+"""
+
 from fastapi import Request, Response, Depends
 from fastapi_users.authentication import AuthenticationBackend, JWTStrategy, BearerTransport
 from fastapi_users import BaseUserManager, FastAPIUsers, IntegerIDMixin
@@ -5,7 +18,11 @@ from typing import Optional
 
 from db.base import User, get_user_db
 
-SECRET_KEY = "mySecretKey12345"
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     verification_token_secret = SECRET_KEY

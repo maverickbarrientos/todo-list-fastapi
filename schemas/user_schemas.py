@@ -1,3 +1,14 @@
+
+"""
+
+User Schema
+
+Validation of incoming data types from the request.
+Ensures data types and structure matches 
+the database fields
+
+"""
+
 from fastapi_users import schemas
 from pydantic import BaseModel
 import enum

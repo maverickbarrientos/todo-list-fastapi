@@ -1,3 +1,16 @@
+
+"""
+
+Task Schema
+
+Defines data validation.
+Ensuring incoming requests have the correct data types
+and structure matching to database fields.
+
+
+"""
+
+
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date, datetime

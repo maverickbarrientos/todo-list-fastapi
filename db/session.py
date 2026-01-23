@@ -1,3 +1,15 @@
+
+"""
+
+Database Session
+
+Provides an asynchronous session to FastAPI endpoints.
+The session is automatically closed after FastAPI
+is done with the operation to ensure safe and efficient
+database interaction
+
+"""
+
 from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker

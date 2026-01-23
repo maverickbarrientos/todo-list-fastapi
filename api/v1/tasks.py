@@ -1,3 +1,16 @@
+"""
+
+Tasks Router
+
+Handles all the task-related operations such as creating tasks, retrieving
+updating, and deletion of tasks.
+
+All endpoints are scoped to authenticated user and requires
+a valid access token
+
+"""
+
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession

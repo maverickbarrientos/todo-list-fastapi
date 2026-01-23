@@ -1,3 +1,18 @@
+
+"""
+
+Task Service
+
+Handles the task-related database operation such as creating, retrieving,
+updating, and deletion of tasks.
+
+Raises client-facing HTTPExceptions for
+invalid operations or rule violations.
+
+
+"""
+
+
 from fastapi import HTTPException
 from sqlalchemy import select, delete
 from db.base import Tasks

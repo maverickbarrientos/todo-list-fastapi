@@ -1,3 +1,16 @@
+
+"""
+
+Base Class Models
+
+Defines all of the database models. These base classes are
+built using SQLAlchemy, a Python ORM.
+
+Database operations are asynchronous to provide more
+faster and efficient queries
+
+"""
+
 from fastapi import Depends
 from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Enum, Text, SmallInteger
 from sqlalchemy.ext.asyncio import AsyncSession
